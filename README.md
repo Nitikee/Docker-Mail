@@ -39,5 +39,7 @@ volumes:
     driver: local
   mailstate:
     driver: local
-    ```
+```
     ./setup.sh email add test@tandem123.local
+    docker-compose up -d mail
+
