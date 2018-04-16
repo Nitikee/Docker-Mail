@@ -1,45 +1,61 @@
 # Docker-Mail
-https://github.com/tomav/docker-mailserver </br>
-vagrant plugin install vagrant-docker-compose
 
-mkdir /etc/docker-mail </br>
-cd /etc/docker-mail </br>
-docker pull tvial/docker-mailserver:latest </br>
-curl -o setup.sh https://raw.githubusercontent.com/tomav/docker-mailserver/master/setup.sh; chmod a+x ./setup.sh </br>
-vi docker-compose.yml </br>
-```bash
-version: '2'
+Nitinan Keel </br>
+Containerization of application and services </br>
+Docker-Mail
 
-services:
-  mail:
-    image: tvial/docker-mailserver:latest
-    hostname: mail
-    domainname: tandem123.local
-    container_name: mail
-    ports:
-    - "25:25"
-    - "143:143"
-    volumes:
-    - maildata:/var/mail
-    - mailstate:/var/mail-state
-    - ./config/:/tmp/docker-mailserver/
-    environment:
-    - ENABLE_SPAMASSASSIN=0
-    - ENABLE_CLAMAV=0
-    - ENABLE_FAIL2BAN=0
-    - ENABLE_POSTGREY=0
-    - ONE_DIR=1
-    - DMS_DEBUG=0
-    cap_add:
-    - NET_ADMIN
-    - SYS_PTRACE
+## Table of contents
+* [Concept]
+  * [Requierements]
+  * [Networkdiagramm]
+  * [IP-Table]
+  * [DNS]
+* [Installation]
+  * [Setup folders and required files]
+  * [Vagrantfiles]
+* [Testing]
+* [Project review]
 
-volumes:
-  maildata:
-    driver: local
-  mailstate:
-    driver: local
+## Concept
+
+### Requirements:
+* [Vagrant](https://www.vagrantup.com/downloads.html)
+* [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
+* [Git](https://git-scm.com/download/win)
+* [Vagrant plugin](https://github.com/leighmcculloch/vagrant-docker-compose)
+
+### Networkdiagramm
 ```
-    ./setup.sh email add test@tandem123.local
-    docker-compose up -d mail
++--------------------------------------------------------------------------+
+|                                                                          |
+|  +-------------+            Vagrant VM's           +-------------+       |
+|  | SVMB1       |                                   | SVMB2       |       |
+|  | 192.168.1.2 |                                   | 192.168.2.2 |       |
+|  +------+------+                                   +------+------+       |
+|         |                                                 |              |
+|         |                                                 |              |
+|         | Private Network +-------------+ Private Network |              |
+|         +-----192.168.1.1-+ PFSense     +-192.168.2.1-----+              |
+|                           +------+------+                                |
+|                                  |                                       |
+|                             192.168.3.x                                  |
+|                                  |                                       |
+|                                  +----NAT-Network----+----------------+  |
+|                                                      |  Windows HOST  |  |
++------------------------------------------------------+                +--+
+                                                       +----------------+
 
+```
+### IP-Table
+
+### DNS
+
+## Installation
+
+### Setup folders and required files
+
+### Vagrantfiles
+
+## Testing
+
+## Project review
