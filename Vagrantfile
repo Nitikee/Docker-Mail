@@ -13,8 +13,10 @@ Vagrant.configure("2") do |config|
       mkdir /docker-mail
       cd /docker-mail
       cp /home/vagrant/docker-compose.yml /docker-mail/docker-compose.yml
-      curl -o setup.sh https://raw.githubusercontent.com/tomav/docker-mailserver/master/setup.sh; chmod a+x ./setup.sh
-      ./setup.sh email add "test@tandem#{i}.nitinankeel.ch" 1234
+      docker pull tvial/docker-mailserver:latest
+      sudo curl -o setup.sh https://raw.githubusercontent.com/tomav/docker-mailserver/master/setup.sh
+      sudo chmod a+x /docker-mail/setup.sh
+      sudo  /docker-mail/setup.sh email add "test@tandem#{i}.nitinankeel.ch" 1234
       docker-compose up -d
       SHELL
       subconfig.vm.provider "virtualbox" do |v|
