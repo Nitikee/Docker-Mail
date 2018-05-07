@@ -16,8 +16,7 @@ Vagrant.configure("2") do |config|
       docker pull tvial/docker-mailserver:latest
       sudo curl -o setup.sh https://raw.githubusercontent.com/tomav/docker-mailserver/master/setup.sh
       sudo chmod a+x /docker-mail/setup.sh
-      sudo  /docker-mail/setup.sh email add "test@tandem#{i}.nitinankeel.ch" 1234
-      docker-compose up -d
+      sudo /docker-mail/setup.sh email add "test@tandem1.nitinankeel.ch" 1234 && docker-compose up -d
       SHELL
       subconfig.vm.provider "virtualbox" do |v|
         v.name = "svmb#{i}"

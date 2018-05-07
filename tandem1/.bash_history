@@ -50,3 +50,12 @@ cat ./setup.sh
 sudo curl -o setup.sh https://raw.githubusercontent.com/tomav/docker-mailserver/master/setup.sh
 cat setup.sh 
 exit
+docker ps
+cd /docker-mail/
+ls
+cd config/
+ls
+cd ..
+./setup.sh 
+./setup.sh email list
+exit
