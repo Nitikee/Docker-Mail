@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
       subconfig.vm.provision "shell", inline: <<-SHELL
       mkdir /docker-mail
       cd /docker-mail
-      cp /home/vagrant/config/docker-compose.yml /docker-mail/docker-compose.yml
+      cp /home/vagrant/docker-compose.yml /docker-mail/docker-compose.yml
       curl -o setup.sh https://raw.githubusercontent.com/tomav/docker-mailserver/master/setup.sh; chmod a+x ./setup.sh
       echo "i=#{i}" > .env
       ./setup.sh email add test@tandem#{i}.nitinankeel.ch 1234
