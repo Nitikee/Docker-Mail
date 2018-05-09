@@ -23,6 +23,7 @@ Docker-Mail
 * [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
 * [Git](https://git-scm.com/download/win)
 * [Vagrant plugin](https://github.com/leighmcculloch/vagrant-docker-compose)
+* Client like [Thunderbird](https://www.thunderbird.net/de/)
 
 ### Networkdiagramm
 ```
@@ -187,16 +188,25 @@ volumes:
     driver: local
 ```
 ## Installation
-Pull the GIT repository.
+Clone the GIT repository.
 ```sh
 git clone https://github.com/Nitikee/Docker-Mail.git
 ```
-Start the VM with Vagrant (Don't forget the Plugin in the requirements above!)
+Start the VM with Vagrant (Don't forget the plugin in the requirements above!)
+Get a coffee. This will take some time (Up to 30min. | Just a guess).
 ```sh
 vagrant up
 ```
+Connect to the VM with SSH. Standard password is "vagrant".
+```sh
+vagrant ssh svmb1 # Insert your VM name 
+```
+Execute the startfile.sh script. Must be done on every Server!
+```sh
+cd /docker-mail/
+./startfile.sh
+```
+Your Mailserver is now running.
 
-
-## Testing
-
-## Project review
+## Connecting with a Client
+In my example I will use Thunderbird-Portable as a Client.

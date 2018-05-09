@@ -98,3 +98,36 @@ ls
 ./startfile.sh 
 cd /co
 ./setup.sh email list
+/docker-mail/startfile.sh 
+cd /docker-mail/
+ls
+vim .env 
+docker ps
+./setup.sh email list
+cd /home/vagrant/
+sudo /docker-mail/startfile.sh 
+cd /docker-mail/
+./setup.sh email list
+sudo ./setup.sh email list
+docker ps
+docker-compose status
+docker-compose ps
+docker ps -a
+docker logs 6c310d01b563
+ls -l
+vim docker-compose.yml 
+vim .ev
+sudo vim .env 
+./setup.sh email list
+sudo docker-compose up -d mail --force-re
+sudo docker-compose up -d mail --force-recreate
+sudo docker-compose up -d --force-recreate
+exit
+docker ps
+docker ps -a
+sudo /docker-mail/startfile.sh 
+docker ps -a
+cd /docker-mail/
+sudo ./startfile.sh
+cd /docker-mail/
+sudo ./startfile.sh 
