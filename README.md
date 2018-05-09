@@ -213,23 +213,34 @@ Your Mailserver is now running.
 In my example I will use Thunderbird-Portable as a Client.
 Create a new email account.
 ![Picture1](./stuff/1.png)
+<br>
 Use an existing email.
 ![Picture2](./stuff/2.png)
+<br>
 Insert Name (not relevant), Email address (testuser@tandem1.nitinankeel.ch), Password (1234) > Continue.
 ![Picture3](./stuff/3.png)
+<br>
+<br>
 Wait and click Done.
 ![Picture4](./stuff/4.png)
+<br>
 Because IMAP and SMTP will communicate over STARTTLS you need to confirm the certificate. 
 ![Picture5](./stuff/5.png)
+<br>
 1 Mailaccount is now active. Do the same with the other(s).
 ![Picture6](./stuff/6.png)
+<br>
 Write a mail and send.
 Example: FROM testuser@tandem2.nitinankeel.ch TO testuser@tandem1.nitinankeel.ch
 ![Picture7](./stuff/7.png)
+<br>
 ![Picture8](./stuff/8.png)
+<br>
 You will get an error because you need to confirm the certificate.
 ![Picture9](./stuff/9.png)
+<br>
 ![Picture10](./stuff/10.png)
+<br>
 The other testuser should receive your mail any moment.
 ![Picture11](./stuff/11.png)
 
