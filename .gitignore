@@ -33,6 +33,9 @@ doc/
 # Python
 *.pyc
 
+# PDF
+*.pdf
+
 # Rubinius
 *.rbc
 
