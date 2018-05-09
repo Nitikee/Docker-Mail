@@ -69,8 +69,44 @@ Docker-Mail
 └── Vagrantfile               # Vagrant file
 ```
 ### Vagrantfile
-
-
+```RUBY
+# BOX Image is Trusty64
+BOX_IMAGE = "ubuntu/trusty64"
+# Mail Node Server
+WEB_COUNT = 2¨
+# Start Vagrant configuration
+Vagrant.configure("2") do |config|
+# Foreach Mail Server
+  (1..WEB_COUNT).each do |i|
+    config.vm.provision :docker
+    config.vm.provision :docker_compose
+    config.vm.box = BOX_IMAGE
+    config.vm.define "svmb#{i}" do |subconfig|
+      subconfig.vm.hostname = "svmb#{i}"
+      subconfig.vm.network :private_network, ip: "192.168.1.#{i}0"
+	  subconfig.vm.synced_folder "tandem#{i}", "/home/vagrant"
+      subconfig.vm.provision "shell", inline: <<-SHELL
+      mkdir /docker-mail
+      cd /docker-mail
+      cp /home/vagrant/docker-compose.yml /docker-mail/docker-compose.yml
+      docker pull tvial/docker-mailserver:latest
+      sudo curl -o setup.sh https://raw.githubusercontent.com/tomav/docker-mailserver/master/setup.sh
+      sudo chmod a+x /docker-mail/setup.sh
+      cat /home/vagrant/test.sh | bash
+      docker-compose up -d
+      SHELL
+      subconfig.vm.provider "virtualbox" do |v|
+        v.gui = true
+        v.name = "svmb#{i}"
+        v.memory = 512
+      end
+    end
+  end
+  config.vm.provision "shell", inline: <<-SHELL
+  echo "hallo"
+  SHELL
+end
+```
 ## Testing
 
 ## Project review

@@ -1,3 +1,2 @@
 #!/bin/bash
-
-touch /home/vagrant/test.txt
+sudo /docker-mail/setup.sh email add test@tandem2.nitinankeel.ch 1234 && docker-compose up -d
