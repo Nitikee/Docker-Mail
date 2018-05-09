@@ -5,16 +5,15 @@ Containerization of application and services </br>
 Docker-Mail
 
 ## Table of contents
-* [Concept]
-  * [Requierements]
-  * [Networkdiagramm]
-  * [IP-Table]
-  * [DNS]
-* [Installation]
-  * [Setup folders and required files]
-  * [Vagrantfiles]
-* [Testing]
-* [Project review]
+* [Concept](https://github.com/Nitikee/Docker-Mail#conecpt)
+  * [Requierements](https://github.com/Nitikee/Docker-Mail#requierements)
+  * [Networkdiagramm](https://github.com/Nitikee/Docker-Mail#networkdiagramm)
+  * [DNS Records](https://github.com/Nitikee/Docker-Mail#dns-records)
+  * [Setup folders and required files](https://github.com/Nitikee/Docker-Mail#setup-folders-and-required-files)
+  * [Vagrantfile](https://github.com/Nitikee/Docker-Mail#vagrantfile)
+  * [Dockerfile](https://github.com/Nitikee/Docker-Mail#dockerfile)
+* [Installation](https://github.com/Nitikee/Docker-Mail#installation)
+* [Connect with a client](https://github.com/Nitikee/Docker-Mail#connect-with-a-client)
 
 ## Concept
 
@@ -62,6 +61,8 @@ Docker-Mail
 . 
 ├── config                    # Config folder synced to both VM's (Required)
 |   └── docker-compose.yml    # Docker-compose file (Required)
+├── stuff                     # Folder for manual pics (Not required)
+|   └── *.PNG                 # Manual PNG's (Not required)
 ├── .gitignore                # .gitignore file (Not required)
 ├── LICENSE (GPLv2)           # License (Not required) 
 ├── README.md                 # Readme file (Not required)
@@ -204,9 +205,48 @@ vagrant ssh svmb1 # Insert your VM name
 Execute the startfile.sh script. Must be done on every Server!
 ```sh
 cd /docker-mail/
-./startfile.sh
+sudo ./startfile.sh
 ```
 Your Mailserver is now running.
 
 ## Connecting with a Client
 In my example I will use Thunderbird-Portable as a Client.
+Create a new email account.
+![Picture1](./stuff/1.png)
+<br>
+Use an existing email.
+![Picture2](./stuff/2.png)
+<br>
+Insert Name (not relevant), Email address (testuser@tandem1.nitinankeel.ch), Password (1234) > Continue.
+![Picture3](./stuff/3.png)
+<br>
+Wait and click Done.
+![Picture4](./stuff/4.png)
+<br>
+Because IMAP and SMTP will communicate over STARTTLS you need to confirm the certificate. 
+![Picture5](./stuff/5.png)
+<br>
+1 Mailaccount is now active. Do the same with the other(s).
+![Picture6](./stuff/6.png)
+<br>
+Write a mail and send.
+Example: FROM testuser@tandem2.nitinankeel.ch TO testuser@tandem1.nitinankeel.ch
+![Picture7](./stuff/7.png)
+<br>
+![Picture8](./stuff/8.png)
+<br>
+You will get an error because you need to confirm the certificate.
+![Picture9](./stuff/9.png)
+<br>
+![Picture10](./stuff/10.png)
+<br>
+The other testuser should receive your mail any moment.
+![Picture11](./stuff/11.png)
+
+## Useful links
+https://github.com/tomav/docker-mailserver
+https://www.thunderbird.net/de/features/#getstarted
+https://www.vagrantup.com/intro/getting-started/install.html
+https://de.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol
+https://de.wikipedia.org/wiki/MX_Resource_Record
+https://www.thomas-krenn.com/de/wiki/Netzwerkkonfiguration_in_VirtualBox
