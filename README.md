@@ -26,17 +26,17 @@ Docker-Mail
 
 ### Networkdiagramm
 ```
-                                     +------------------------+
-                                     | SVMB1                  |
-                   SMTP --> 25  +----+ 192.168.1.10/24        |
-                   IMAP --> 143 |    | tandem2.nitinankeel.ch |
-+----------------+              |    +------------------------+
-| Windows Client +--------------+
-| 192.168.1.2/24 |              |    +------------------------+
-+----------------+              |    | SVMB2                  |
-                                +----+ 192.168.1.20/24        |
-                                     | tandem1.nitinankeel.ch |
-                                     +------------------------+
+                                      +------------------------+
+                                      | SVMB1                  |
+                    SMTP --> 25  +----+ 192.168.123.10/24      |
+                    IMAP --> 143 |    | tandem2.nitinankeel.ch |
++-----------------+              |    +------------------------+
+| Windows Client  +--------------+
+| 192.168.123.2/24|              |    +------------------------+
++---------------- +              |    | SVMB2                  |
+                                 +----+ 192.168.123.20/24      |
+                                      | tandem1.nitinankeel.ch |
+                                      +------------------------+
 ```
 ### DNS Records
 ```
@@ -59,54 +59,144 @@ Docker-Mail
 ### Setup folders and required files
 ```
 . 
-├── tandem1         
-|   ├── docker-compose.yml
-│   └── user.sh
-├── tandem2
-|   ├── docker-compose.yml
-│   └── user.sh         
-├── LICENSE (GPLv2)
-└── Vagrantfile               # Vagrant file
+├── config                    # Config folder synced to both VM's (Required)
+|   └── docker-compose.yml    # Docker-compose file (Required)
+├── .gitignore                # .gitignore file (Not required)
+├── LICENSE (GPLv2)           # License (Not required) 
+├── README.md                 # Readme file (Not required)
+├── README.pdf                # PDF version from Readme file (Not required)
+└── Vagrantfile               # Vagrant file (Required)
 ```
 ### Vagrantfile
 ```RUBY
-# BOX Image is Trusty64
+# Vagrant box image. Only tested with trusty64!
 BOX_IMAGE = "ubuntu/trusty64"
-# Mail Node Server
-WEB_COUNT = 2¨
+# 2 Mailserver. If you change this, you need to add or remove the DNS records!
+WEB_COUNT = 2
 # Start Vagrant configuration
+
 Vagrant.configure("2") do |config|
-# Foreach Mail Server
+
+  # Foreach Mailserver do:
   (1..WEB_COUNT).each do |i|
+
+    # Install Docker and Docker-Compose on VM
     config.vm.provision :docker
     config.vm.provision :docker_compose
+
+    # Set box image
     config.vm.box = BOX_IMAGE
+
+    # Start subconfigurations
     config.vm.define "svmb#{i}" do |subconfig|
+
+      # Set name like "svmb1"
       subconfig.vm.hostname = "svmb#{i}"
-      subconfig.vm.network :private_network, ip: "192.168.1.#{i}0"
-	  subconfig.vm.synced_folder "tandem#{i}", "/home/vagrant"
+
+      # Host-Only-Network. If you change this, then change your DNS records!
+      subconfig.vm.network :private_network, ip: "192.168.123.#{i}0"
+
+      # Set "config" as synced folder to "/home/vagrant"
+      subconfig.vm.synced_folder "config", "/home/vagrant"
+
+      # Start inline shell
       subconfig.vm.provision "shell", inline: <<-SHELL
+
+      # Create directory "docker-mail" in root
       mkdir /docker-mail
+
+      # Change to directory
       cd /docker-mail
-      cp /home/vagrant/docker-compose.yml /docker-mail/docker-compose.yml
-      docker pull tvial/docker-mailserver:latest
-      sudo curl -o setup.sh https://raw.githubusercontent.com/tomav/docker-mailserver/master/setup.sh
+
+      # Copy docker-compose.yml from synced folder to docker-mail folder
+      sudo cp /home/vagrant/docker-compose.yml /docker-mail/docker-compose.yml
+
+      # Create .env file. DOMAINNAME must be equal to your DNS record!
+      sudo echo "DOMAINNAME=tandem#{i}.nitinankeel.ch" > .env
+
+      # Pull docker image
+      sudo docker pull tvial/docker-mailserver:latest
+
+      # Pull Setup.sh file and make it executable
+      sudo curl -o /docker-mail/setup.sh https://raw.githubusercontent.com/tomav/docker-mailserver/master/setup.sh
       sudo chmod a+x /docker-mail/setup.sh
-      cat /home/vagrant/test.sh | bash
-      docker-compose up -d
+
+      # Create startfile.sh script. After the installing the VM, just execute this script.
+      # It will create a user "testuser" for each domain / mailserver. Password is 1234
+      sudo echo "/docker-mail/setup.sh email add testuser@tandem#{i}.nitinankeel.ch 1234 \ndocker-compose up -d mail" > startfile.sh
+
+      # Make it executable
+      sudo chmod +x /docker-mail/startfile.sh
+
+      # End of inline script
       SHELL
+
+      # Virtualbox settings
       subconfig.vm.provider "virtualbox" do |v|
-        v.gui = true
+
+        # Name of the VM
         v.name = "svmb#{i}"
+
+        # Memmory in MB
         v.memory = 512
+
       end
+
     end
+
   end
-  config.vm.provision "shell", inline: <<-SHELL
-  echo "hallo"
-  SHELL
+
 end
 ```
+### Dockerfile
+
+Nothing special here.
+```yaml
+version: '2'
+
+services:
+  mail:
+    image: tvial/docker-mailserver:latest
+    hostname: mail
+    domainname: ${DOMAINNAME} # This is a variable from the .env file! IP of this VM MUST equal the DNS record!
+    container_name: mail
+    ports:
+    - "25:25"
+    - "143:143"
+    - "587:587"
+    - "993:993"
+    volumes:
+    - maildata:/var/mail
+    - mailstate:/var/mail-state
+    - ./config/:/tmp/docker-mailserver/
+    environment:
+    - ENABLE_SPAMASSASSIN=0 # Disabled because it's just a dev environment 
+    - ENABLE_CLAMAV=0 # Disabled because it's just a dev environment
+    - ENABLE_FAIL2BAN=0 # Disabled because it's just a dev environment
+    - ENABLE_POSTGREY=0 # Disabled because it's just a dev environment
+    - ONE_DIR=1
+    - DMS_DEBUG=0
+    cap_add:
+    - NET_ADMIN
+    - SYS_PTRACE
+
+volumes:
+  maildata:
+    driver: local
+  mailstate:
+    driver: local
+```
+## Installation
+Pull the GIT repository.
+```sh
+git clone https://github.com/Nitikee/Docker-Mail.git
+```
+Start the VM with Vagrant (Don't forget the Plugin in the requirements above!)
+```sh
+vagrant up
+```
+
+
 ## Testing
 
 ## Project review
